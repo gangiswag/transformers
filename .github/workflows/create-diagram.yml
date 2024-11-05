@@ -1,0 +1,29 @@
+name: Create Repository Structure Diagram
+
+on:
+  push:
+    branches:
+      - main  # You can change this to any branch you want to track
+  workflow_dispatch:  # Allows manual triggering of the action
+
+jobs:
+  generate-diagram:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Generate repo structure diagram
+        uses: githubocto/repo-visualizer@0.7.1
+        with:
+          output_file: "images/diagram.svg"  # Specify where to save the diagram
+          excluded_paths: "dist,node_modules,.github"  # Exclude unnecessary directories
+
+      - name: Commit and push diagram
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add images/diagram.svg
+          git commit -m "Repo visualizer: updated diagram [skip ci]"
+          git push origin main  # Adjust this if you're pushing to a different branch
